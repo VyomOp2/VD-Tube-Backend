@@ -1,0 +1,15 @@
+{
+  "name": "backned-project",
+  "version": "1.0.0",
+  "description": "a backend course - youtube",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "javascript",
+    "backend"
+  ],
+  "author": "Vyom Maloo",
+  "license": "ISC"
+}
