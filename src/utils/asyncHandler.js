@@ -5,13 +5,13 @@
 // Promise and  async/await Function to handle the errors from the SERVER.
 const asyncHandler = (requestHandler) => {
     // Return a function that takes in request, response, and next (error handling) objects
-    (req , res , next) => {
+    return (req , res , next) => {
         // Use the Promise.resolve method to convert the requestHandler function into a promise
         Promise.resolve(requestHandler(req , res , next)).catch((err) => next(err))
     }
 }
 // Export the asyncHandler function to make it available to other parts of the code
-export {asyncHandler}
+export { asyncHandler }
 
 
 
