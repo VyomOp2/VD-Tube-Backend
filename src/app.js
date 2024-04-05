@@ -18,7 +18,6 @@ app.use(cookieParser()) // We are setting so that we can send and access the coo
 // Routes
 import userRouter from "./routes/user.routes.js";
 
-
 // Routes Declaration
 app.use("/api/v1/users", userRouter); // --> http://localhost:PORT/api/v1/users/register
 
