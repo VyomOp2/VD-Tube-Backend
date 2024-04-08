@@ -1,5 +1,5 @@
 import { asyncHandler } from ".././utils/asyncHandler.js";
-import { ApiError } from ".,/utils/ApiError.js";
+import { ApiError } from "../utils/ApiError.js";
 import { User } from "../models/user.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.file_upload.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
@@ -16,7 +16,6 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 
 const registerUser = asyncHandler( async (req , res ) => {
     const {fullname , email , username , password } = req.body
-    console.log("email : " , email);
 
     // Basic field validation
     if ([fullname, email, username, password].some((field) => field?.trim() === "")) {
@@ -34,12 +33,11 @@ const registerUser = asyncHandler( async (req , res ) => {
     }
 
     // Checking if user with same email or username is present in Database
-    const existedUser = User.findOne(
+    const existedUser = await User.findOne(
         { 
             $or: [{ username }, { email }]
         },
     )
-    console.log(existedUser);
 
     if(existedUser) {
         throw new ApiError( 409, "Username or Email Already Exists");
@@ -47,17 +45,21 @@ const registerUser = asyncHandler( async (req , res ) => {
 
     // Saving the Image and the Avater path to the Server
     const avatarLocalPath = req.files?.avatar[0]?.path;
-    const coverImageLocalPath = req.files?.coverImage[0]?.path;
+    let coverImageLocalPath;
+    if (req.files && Array.isArray(req.files.coverImage) && req.files.coverImage.length > 0) {
+        coverImageLocalPath = req.files.coverImage[0].path
+    }
 
-    if(!avatarLocalPath)
-        throw new ApiError(400 , "Avatar file is Required")
+    if (!avatarLocalPath) {
+        throw new ApiError(400, "Avatar file is required")
+    }
 
-    // Uploading the LocalPath of the images and avatar into Cloudinary
     const avatar = await uploadOnCloudinary(avatarLocalPath)
-    const coverImage = await uploadOnCloudinary(coverImageLocalPath)
+    const coverImage = coverImageLocalPath ? await uploadOnCloudinary(coverImageLocalPath) : null
 
-    if(!avatar)
-        throw new ApiError(400 , "Avatar file is Required")
+    if (!avatar) {
+        throw new ApiError(400, "Avatar file is required")
+    }
 
     // Creating a New User using the Model and saving it into MongoDB
     const user =  await User.create({

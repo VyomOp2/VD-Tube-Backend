@@ -60,7 +60,7 @@ userSchema.pre("save", async function (next) {
 )
 
 // This Method will check if a provided password is correct by comparing it to the Plaintext version of the stored password.
-userSchema.methods.isPasswordCorrect() = async function(password) {
+userSchema.methods.isPasswordCorrect = async function(password) {
     return await bcrypt.compare(password, this.password)
 }
 
